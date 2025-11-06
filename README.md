@@ -1,10 +1,11 @@
+
 # 小說網站 MVP 功能清單（精簡版）
 > Laravel 10 + Blade + MySQL  
 > 目標：7 天內上線可閱讀原型  
 
 ## 1. 使用者系統 ★★★
 
-- [x] 註冊 / 登入 / 登出（Laravel Breeze）
+- [] 註冊 / 登入 / 登出（Laravel Breeze）
 - [x] 第三方登入（Socialite：Google）
 - [x] 個人資料編輯（頭像上傳 → Storage::disk('public')）
 - [x] 角色判斷（Gate + middleware:auth,author）
