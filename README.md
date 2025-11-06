@@ -1,66 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+```markdown
+# 小說網站 MVP 功能清單（精簡版）
+> Laravel 10 + Blade + MySQL  
+> 目標：7 天內上線可閱讀原型  
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. 使用者系統 ★★★
+```
+users               → id, name, email, password, avatar, role (reader/author/admin)
+```
+- [x] 註冊 / 登入 / 登出（Laravel Breeze）
+- [x] 第三方登入（Socialite：Google）
+- [x] 個人資料編輯（頭像上傳 → Storage::disk('public')）
+- [x] 角色判斷（Gate + middleware:auth,author）
 
-## About Laravel
+## 2. 小說管理 ★★★
+```
+novels              → id, title, slug, cover, description, author_id, category_id, status (連載/完結)
+categories          → id, name
+```
+- [x] 首頁：最新 20 本 + 熱門 20 本（views_count）
+- [x] 分類瀏覽（/category/{slug}）
+- [x] 搜尋（LIKE title）
+- [x] 小說詳情頁（章節列表 + 分頁）
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 3. 章節閱讀 ★★★
+```
+chapters            → id, novel_id, title, content(longtext), chapter_no, is_free
+```
+- [x] 閱讀頁（/novel/{novel}/{chapter}）
+- [x] 上一章 / 下一章（JS + Laravel route）
+- [x] 閱讀進度本地儲存（localStorage）
+- [x] 夜間模式切換（CSS class toggle）
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 4. 作者後台 ★★☆
+- [x] 創建小說（表單 + 封面上傳）
+- [x] 新增 / 編輯章節（TinyMCE 編輯器）
+- [x] 章節排序拖曳（SortableJS）
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 5. 書架與追更 ★★☆
+```
+favorites           → user_id, novel_id (pivot)
+```
+- [x] 一鍵加入書架
+- [x] 個人書架頁（/my/shelf）
+- [x] 新章推送（站內小紅點）
 
-## Learning Laravel
+## 6. 評論系統 ★★☆
+```
+comments            → id, user_id, novel_id, chapter_id, parent_id, body
+```
+- [x] 章節底部留言（巢狀 2 層）
+- [x] 即時載入（Livewire 簡易版）
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 7. 排行榜 ★☆☆
+- [x] 週點擊榜（Redis ZINCRBY + Scheduler 每日落 MySQL）
+- [x] 總收藏榜
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 8. 後台管理 ★☆☆
+- [x] Laravel Filament（5 分鐘裝好）
+- [x] 小說審核 + 強制下架
