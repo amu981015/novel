@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('novels', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique(); // Novel title must be unique
-            $table->string('author'); // Author name
-            $table->string("cover_image")->nullable(); // Cover image URL
+            $table->string('title', 100)->unique(); // Novel title must be unique
+            $table->string('author', 50); // Author name
+            $table->string("cover", 255)->nullable(); // Cover image URL
             $table->string("intro")->nullable(); // Introduction
             $table->unsignedBigInteger('category_id'); // Foreign key to categories table
-            $table->tinyInteger('status')->default(0); // Status: 0 - ongoing, 1 - completed
+            $table->tinyInteger('status')->default(0); // Status: 0 - ongoing, 1 - completed, 2 - hiatus
             $table->timestamps("created_at", "updated_at");
         });
     }

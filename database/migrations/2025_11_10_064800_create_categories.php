@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();  // Category name must be unique
+            $table->string('name', 20)->unique();  // Category name must be unique
             $table->timestamps("created_at");
         });
     }

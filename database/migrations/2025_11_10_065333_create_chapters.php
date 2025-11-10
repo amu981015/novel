@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('novel_id'); // Foreign key to novels table
             $table->integer('chapter_num'); // Chapter number
-            $table->string('title'); // Chapter title
+            $table->string('title', 100); // Chapter title
             $table->longText('content'); // Chapter content
             $table->timestamps("created_at", "updated_at");
         });
