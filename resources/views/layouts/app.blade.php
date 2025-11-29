@@ -35,7 +35,7 @@
     <!-- 頁尾 -->
     <footer class="bg-white border-t mt-12 py-6">
         <div class="container mx-auto px-4 text-center text-sm text-gray-500">
-            © 2025 小說網站 | 由老王帶你飛
+            © 2025 小說網站 | 版權所有
         </div>
     </footer>
 
