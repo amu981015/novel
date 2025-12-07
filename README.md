@@ -1,5 +1,3 @@
-```
-
 # 小說閱讀平台 MVP
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red)](https://laravel.com)  
@@ -173,5 +171,3 @@ MIT License - 詳見 [LICENSE](LICENSE) 檔。
 開發者：Amy (學習中)  
 
 最後更新：2025 年 12 月
-
-```
