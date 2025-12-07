@@ -2,7 +2,6 @@
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red)](https://laravel.com)  
 
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## 專案簡介
 
