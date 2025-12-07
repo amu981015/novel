@@ -82,9 +82,9 @@
 
    ```bash
 
-   git clone https://github.com/your-username/novel-website-mvp.git
+   git clone https://github.com/amu981015/novel.git
 
-   cd novel-website-mvp
+   cd novel
 
    ```
 
@@ -154,17 +154,6 @@
 
 - 全站搜尋與熱門推薦。  
 
-- 部署到 Heroku 或 Vercel。
-
-## 貢獻
-
-歡迎 Fork 與 Pull Request！  
-
-如果有 Bug 或建議，請開 Issue 討論。
-
-## 授權
-
-MIT License - 詳見 [LICENSE](LICENSE) 檔。
 
 ---
 
