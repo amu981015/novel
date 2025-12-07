@@ -60,22 +60,40 @@
     </div>
 
     <!-- 章節列表 -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="bg-gray-100 px-6 py-3 font-bold">章節目錄</div>
-        <div class="divide-y">
+    <div class="bg-white rounded-lg shadow overflow-hidden mt-6">
+        <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+    <h3 class="font-bold text-gray-800">
+        章節目錄 
+        <span class="text-sm font-normal text-gray-500">({{ $novel->chapters_count }} 章)</span>
+    </h3>
+    
+    
+    @if($sort === 'asc')
+        <a href="{{ route('novels.show', ['id' => $novel->id, 'sort' => 'desc']) }}" 
+           class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1">
+            <span>↓</span> 點擊倒序
+        </a>
+    @else
+        <a href="{{ route('novels.show', ['id' => $novel->id, 'sort' => 'asc']) }}" 
+           class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1">
+            <span>↑</span> 點擊正序
+        </a>
+    @endif
+</div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 p-4">
             @forelse($chapters as $chapter)
             <a href="{{ route('novels.chapter', [$novel->id, $chapter->chapter_num]) }}"
-                class="block px-6 py-4 hover:bg-gray-50 transition flex justify-between">
-                <span>第 {{ str_pad($chapter->chapter_num, 4, '0', STR_PAD_LEFT) }} 章</span>
-                <span class="text-gray-700">{{ $chapter->title }}</span>
+                class="block px-2 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded truncate border-b border-dashed border-gray-100 md:border-none"
+                title="{{ $chapter->title }}">
+                {{ str_pad($chapter->chapter_num, 4, '0', STR_PAD_LEFT) }}章 {{ $chapter->title }}
             </a>
             @empty
-            <div class="text-center py-8 text-gray-500">尚未發布章節</div>
+            <div class="col-span-full text-center py-8 text-gray-500">尚未發布章節</div>
             @endforelse
         </div>
 
-        <!-- 分頁 -->
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 border-t">
             {{ $chapters->appends(request()->query())->links() }}
         </div>
     </div>

@@ -38,15 +38,16 @@
                 </h3>
                 <p class="text-sm text-gray-600">作者：{{ $novel->author }}</p>
 
-                @if($novel->chapters->count() > 0)
+
+                @if($novel->latestChapter)
                 <p class="text-sm text-gray-500 mt-1">
-                    最新：{{ $novel->chapters->last()->title }}
+                    最新：{{ $novel->latestChapter->title }}
                 </p>
                 <p class="text-xs text-gray-400">
-                    更新：{{ $novel->updated_at->format('Y-m-d') }}
+                    更新：{{ $novel->latestChapter->updated_at->format('Y-m-d') }}
                 </p>
                 @else
-                <p class="text-sm text-gray-500">尚未有章節</p>
+                <p class="text-sm text-gray-500 mt-1">尚未有章節</p>
                 @endif
 
                 <div class="mt-2 text-xs text-gray-500">

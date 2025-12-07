@@ -11,19 +11,18 @@ class NovelController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. 取得所有分類（給側邊欄）
         $categories = Category::all();
 
-        // 2. 查小說（預載關聯，避免 N+1）
-        $novels = Novel::with(['category', 'chapters'])
+        // 1. [優化] 移除 'chapters' 改用 'latestChapter'
+        // 這樣每本書只會 query 一條最新的章節資料，而不是幾千條
+        $novels = Novel::with(['category', 'latestChapter'])
             ->when($request->category, function ($query, $categoryId) {
                 return $query->where('category_id', $categoryId);
             })
-            ->withCount('chapters')           // 顯示「共 X 章」
-            ->latest('updated_at')           // 最新更新在前
-            ->paginate(12);                  // 一頁 12 本
+            ->withCount('chapters')
+            ->latest('updated_at')
+            ->paginate(12);
 
-        // 3. 目前選中的分類（給 Blade 高亮）
         $currentCategory = $request->category
             ? Category::find($request->category)
             : null;
@@ -31,51 +30,59 @@ class NovelController extends Controller
         return view('novels.index', compact('novels', 'categories', 'currentCategory'));
     }
 
-    // app/Http/Controllers/NovelController.php  最後面加上
-
-    public function show($id)
+    // 修改 show 方法
+    public function show(Request $request, $id) // 1. 記得注入 Request
     {
-        // 預載所有需要的關聯，避免 N+1
-        $novel = Novel::with('category')
+        $novel = Novel::with(['category', 'latestChapter'])
             ->withCount('chapters')
             ->findOrFail($id);
 
-        // 章節分頁，每頁 100 章（夠用）
-        $chapters = Chapter::where('novel_id', $id)
-            ->orderBy('chapter_num')
+        // 2. 接收排序參數，預設為 'asc' (正序)
+        $sort = $request->input('sort', 'asc');
+
+        // 安全性檢查：只允許 'asc' 或 'desc'，避免被亂打
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
+
+        $chapters = Chapter::select('id', 'novel_id', 'title', 'chapter_num', 'updated_at')
+            ->where('novel_id', $id)
+            ->orderBy('chapter_num', $sort) // 3. 使用變數進行排序
             ->paginate(100);
 
-        // 最新章節（給按鈕用）
-        $latestChapter = $novel->chapters()->orderByDesc('chapter_num')->first();
+        $latestChapter = $novel->latestChapter;
 
-        return view('novels.show', compact('novel', 'chapters', 'latestChapter'));
+        // 4. 將 $sort 變數傳回 View，以便讓按鈕知道現在是什麼狀態
+        return view('novels.show', compact('novel', 'chapters', 'latestChapter', 'sort'));
     }
-
-    // app/Http/Controllers/NovelController.php  再加這段
 
     public function chapter($novelId, $chapterNum)
     {
-        // 1. 先找這本書（預載分類）
-        $novel = Novel::with('category')->findOrFail($novelId);
+        // 這裡不需要載入 category，除非你的閱讀頁有顯示分類
+        $novel = Novel::findOrFail($novelId);
 
-        // 2. 找這一章
         $chapter = Chapter::where('novel_id', $novelId)
             ->where('chapter_num', $chapterNum)
             ->firstOrFail();
 
-        // 3. 上一章、下一章（用 chapter_num 比大小）
-        $prevChapter = Chapter::where('novel_id', $novelId)
+        // 3. [效能] 上一章/下一章查詢優化
+        // 只需要 ID 和 chapter_num，不需要把整章內容 (content) 都撈出來
+        $prevChapter = Chapter::select('chapter_num')
+            ->where('novel_id', $novelId)
             ->where('chapter_num', '<', $chapterNum)
-            ->orderBy('chapter_num', 'desc')
+            ->orderByDesc('chapter_num')
             ->first();
 
-        $nextChapter = Chapter::where('novel_id', $novelId)
+        $nextChapter = Chapter::select('chapter_num')
+            ->where('novel_id', $novelId)
             ->where('chapter_num', '>', $chapterNum)
-            ->orderBy('chapter_num', 'asc')
+            ->orderBy('chapter_num')
             ->first();
 
-        // 4. 更新小說的 updated_at（讓首頁最新更新排序正確）
-        $novel->touch(); // 超好用的一行！
+        // 4. [修正] 移除 $novel->touch(); 
+        // 閱讀不應該更新小說的「更新時間」，那應該是「作者發文」時才更新的。
+        // 如果你需要統計熱度，應該另外建立一個 views 欄位或一張 novel_views 表。
+        $novel->increment('views'); // 假設你有 views 欄位，這樣比較合理
 
         return view('novels.chapter', compact(
             'novel',
